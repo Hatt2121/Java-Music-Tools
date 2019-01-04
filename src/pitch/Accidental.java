@@ -23,4 +23,13 @@ public enum Accidental {
 	public int returnIndex() {
 		return index;
 	}
+	
+	public static Accidental returnFromIndex(int index) {
+		for(Accidental a : Accidental.values()) {
+			if(a.index == index) {
+				return a;
+			}
+		}
+		throw new IllegalArgumentException("Accidental Calculated Doesn't Exist");
+	}
 }

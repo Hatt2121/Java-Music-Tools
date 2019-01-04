@@ -34,9 +34,9 @@ public enum Naturals {
 		return diff;
 	}
 	
-	public Naturals findNote(int diff) {
+	public Naturals calculateNextNote(int quantity) {
 		octaveflag = false;
-		int index = mod + diff-1;
+		int index = mod + quantity-1;
 		int wrap = index - 7;
 		for(Naturals a : Naturals.values() ) {
 			if(a.mod == index) {
@@ -47,5 +47,24 @@ public enum Naturals {
 			}
 		}
 		throw new IllegalArgumentException("Pitch not Found");
+	}
+	
+	public Naturals returnFromChromatic(int chrom) {
+		for(Naturals a : Naturals.values()) {
+			if(chrom == a.chrom) {
+				return a;
+			}
+		}
+		throw new IllegalArgumentException("IndexOutOfBounds");
+	}
+	
+	public static boolean hasChrom(int chrom) {
+		boolean b = false;
+		for(Naturals a : Naturals.values()) {
+			if(a.chrom == chrom) {
+				b = true;
+			}
+		}
+		return b;
 	}
 }

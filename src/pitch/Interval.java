@@ -8,7 +8,7 @@ public enum Interval {
 	H(-1,2,1),
 	
 	d2(-2,2,0),
-	m2(-1,2,1),
+	m2(-1,2,1), 
 	M2(0,2,2),
 	A2(1,2,3),
 	
@@ -43,13 +43,14 @@ public enum Interval {
 	private int quantdiff;
 	private int tondiff;
 	
+	
 	Interval(int diff, int quantdiff,int tondiff) {
 		this.qualdiff = diff;
 		this.quantdiff = quantdiff;
 		this.tondiff = tondiff;
 	}
 	
-	public int returnDifference() {
+	public int returnQuality() {
 		return qualdiff;
 	}
 	

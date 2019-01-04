@@ -10,17 +10,27 @@ public class Pitch {
 	
 	private String chara;
 	Naturals nat;
-	Accidental acc;
+	public Accidental acc;
 	
 	public Pitch(Naturals nat, int octave, Accidental acc) {
 		this.nat = nat;
-		chrom = nat.returnChrom();
+		chrom = nat.returnChrom()+acc.returnIndex();
 		chara = nat.returnCharacter()+acc.returnCharacter();
 		
 		this.octave = octave;
 		this.acc = acc;
 		
-		midi = nat.returnChrom()+(octave+1)*12;		
+		midi = nat.returnChrom()+(octave+1)*12+acc.returnIndex();		
+	}
+	
+	public Pitch(Naturals nat, int octave, Accidental acc, int chrom, int midi) {
+		this.nat = nat;
+		this.octave = octave;
+		this.acc = acc;
+		this.chrom = chrom;
+		this.midi = midi;
+		
+		chara = nat.returnCharacter() + acc.returnCharacter();
 	}
 	
 	public void printChrom() {
@@ -38,29 +48,18 @@ public class Pitch {
 	public void lower() {
 		chrom = chrom -1;
 		midi = midi -1;
-		if(chara.endsWith("#")) {
-			chara = chara.replace("#","");
-		} else if(chara.endsWith("x")) {
-			chara = chara.replace("x","#");
-		} else if(chara.endsWith("b")) {
-			chara = chara.replace("b", "%");
-		} else {
-			chara = chara+"b";
-		}
+		chara = chara.replace(acc.returnCharacter(), "");
+		acc = Accidental.returnFromIndex(acc.returnIndex()-1);
+		chara  = chara + acc.returnCharacter();
+
 	}
 	
 	public void raise() {
 		chrom = chrom+ 1;
 		midi = midi +1;
-		if(chara.endsWith("#")) {
-			chara = chara.replace("#","x");
-		} else if(chara.endsWith("b")) {
-			chara = chara.replace("b", "");
-		} else if(chara.endsWith("%")) {
-			chara = chara.replace("%", "b");
-		} else {
-			chara  = chara + "#";
-		}
+		chara = chara.replace(acc.returnCharacter(), "");
+		acc = Accidental.returnFromIndex(acc.returnIndex()+1);
+		chara = chara + acc.returnCharacter();
 	}
 	
 	public double returnFreq() {
@@ -68,5 +67,29 @@ public class Pitch {
 		double p = q/12;
 		freq = 440*Math.pow(2,p);
 		return freq;
+	}
+	
+	public Pitch calculateNextPitch(Interval interval) {
+		int mid = midi +interval.returnTonicDifference();
+		Naturals na = nat.calculateNextNote(interval.returnQuantity());
+		Accidental ac;
+		int chro = chrom + interval.returnTonicDifference();
+		int oct = octave;
+		if(na.returnChrom() != chro) {
+			int b = chro - na.returnChrom();
+			if(chro>=12) {
+				b=b-13;
+			}
+			ac = Accidental.returnFromIndex(b);
+		} else {
+			ac = Accidental.NATURAL;
+		}
+		
+		if(nat.octaveflag) {
+			chro = chro - 12;
+			oct = octave + 1;
+		}
+		
+		return new Pitch(na,oct,ac,chro,mid);
 	}
 }
